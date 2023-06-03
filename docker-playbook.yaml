@@ -1,38 +1,29 @@
----
-- name: Install Docker using jenkins
-  hosts: webserver
-  become: true
+- hosts: webserver
+  become: yes
+
   tasks:
-    - name: Install Dependency
+    - name: update and install dependencies
       apt:
-        name: "{{item}}"
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
         update_cache: yes
-        state: present
-      loop:
-        - apt-transport-https
-        - ca-certificates
-        - curl
-        - gnupg-agent
-        - software-properties-common
-    - name: Get he GPG key
+    - name: add key repo
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
-    - name: Setup the repository
+    - name: add docker repo
       apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable"
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
         state: present
-    - name: Install Docker
+        filename: docker
+    - name: install docker-ce
       apt:
-        name: "{{item}}"
-        state: latest
-        update_cache: yes
-      loop:
-        - docker-ce
-        - docker-ce-cli
-        - containerd.io
-    - name: State of Docker
-      service:
+        name: docker-ce
+        state: present
+    - name: make sure docker is running
+      ansible.builtin.service:
         name: docker
         state: started
-        enabled: yes
