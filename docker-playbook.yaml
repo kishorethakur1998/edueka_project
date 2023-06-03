@@ -1,6 +1,6 @@
 ---
 - name: Install Docker using jenkins
-  host: all
+  hosts: all
   become: true
   tasks:
     - name: Install Dependency
@@ -15,7 +15,7 @@
         - gnupg-agent
         - software-properties-common
     - name: Get he GPG key
-      apt-key:
+      apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
     - name: Setup the repository
