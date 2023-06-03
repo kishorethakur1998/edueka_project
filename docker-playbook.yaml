@@ -1,6 +1,6 @@
 ---
 - name: Install Docker using jenkins
-  hosts: all
+  hosts: webserver
   become: true
   tasks:
     - name: Install Dependency
