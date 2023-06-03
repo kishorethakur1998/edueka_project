@@ -1,0 +1,38 @@
+---
+- name: Install Docker using jenkins
+  host: all
+  become: true
+  tasks:
+    - name: Install Dependency
+      apt:
+        name: "{{item}}"
+        update_cache: yes
+        state: present
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+    - name: Get he GPG key
+      apt-key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Setup the repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable"
+        state: present
+    - name: Install Docker
+      apt:
+        name: "{{item}}"
+        state: latest
+        update_cache: yes
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    - name: State of Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
