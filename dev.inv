@@ -1,2 +1,0 @@
-[webserver]
-172.31.81.241 ansible_user=ansible
