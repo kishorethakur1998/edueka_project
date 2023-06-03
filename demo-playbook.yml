@@ -8,6 +8,17 @@
     default_container_command: sleep 1d
 
   tasks:
+    - name: Revome previous packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: absent
     - name: Install aptitude
       apt:
         name: aptitude
